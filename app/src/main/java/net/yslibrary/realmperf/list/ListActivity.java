@@ -1,0 +1,140 @@
+package net.yslibrary.realmperf.list;
+
+import net.yslibrary.realmperf.App;
+import net.yslibrary.realmperf.Note;
+import net.yslibrary.realmperf.R;
+import net.yslibrary.realmperf.ViewHolder;
+import net.yslibrary.realmperf.databinding.ActivityTestBaseBinding;
+
+import android.content.Context;
+import android.content.Intent;
+import android.databinding.DataBindingUtil;
+import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import io.realm.Realm;
+import io.realm.internal.OutOfMemoryError;
+import timber.log.Timber;
+
+public class ListActivity extends AppCompatActivity {
+
+    public static final String BUNDLE_NEXT_ID = "next_id";
+
+    private Realm realm;
+
+    private ActivityTestBaseBinding binding;
+
+    private Adapter adapter;
+
+    private long nextId;
+
+    public static Intent getIntent(Context context, long nextId) {
+        Intent intent = new Intent(context.getApplicationContext(), ListActivity.class);
+        intent.putExtra(BUNDLE_NEXT_ID, nextId);
+
+        return intent;
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_test_base);
+        realm = Realm.getDefaultInstance();
+
+        nextId = getIntent().getLongExtra(BUNDLE_NEXT_ID, 0L);
+        if (nextId > 0) {
+            long current = App.get(this).noteIdCounter.get();
+            if (nextId == current) {
+                nextId = 0;
+            }
+        }
+
+        try {
+            List<Note> notes = new ArrayList<>();
+            long max = App.get(this).noteIdCounter.get();
+            long current = nextId;
+            long i = 0;
+            for (; i < 200; ) {
+                Note note = realm.where(Note.class).equalTo("id", current).findFirst();
+                if (note == null) {
+                    if (current >= max) {
+                        current = 0;
+                    } else {
+                        current++;
+                    }
+                } else {
+                    notes.add(note);
+                    i++;
+                    current++;
+                }
+            }
+            adapter = new Adapter(notes);
+            binding.list.setLayoutManager(new LinearLayoutManager(this));
+            binding.list.setAdapter(adapter);
+            nextId = current;
+
+        } catch (Throwable t) {
+            if (t instanceof OutOfMemoryError || t instanceof java.lang.OutOfMemoryError) {
+                Timber.e("OutOfMemoryError occurred! - activity count: %d", nextId);
+            } else {
+                Timber.e(t, t.getMessage());
+            }
+            throw t;
+        }
+
+        long count = App.get(this).listActivityCount.incrementAndGet();
+        Timber.d("ListActivity count - %d", count);
+    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        binding.getRoot().postDelayed(() -> {
+            startActivity(getIntent(this, nextId));
+        }, 1000);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        realm.close();
+    }
+
+    class Adapter extends RecyclerView.Adapter<ViewHolder> {
+
+        private final List<Note> dataSet;
+
+        public Adapter(List<Note> dataSet) {
+            this.dataSet = dataSet;
+        }
+
+        @Override
+        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            View view = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.item_list, parent, false);
+            return new ViewHolder(view);
+        }
+
+        @Override
+        public void onBindViewHolder(ViewHolder holder, int position) {
+            Note note = dataSet.get(position);
+            holder.binding.id.setText(String.valueOf(note.id));
+            holder.binding.note1.setText(note.note);
+            holder.binding.note2.setText(note.note2);
+        }
+
+        @Override
+        public int getItemCount() {
+            return dataSet.size();
+        }
+    }
+}
