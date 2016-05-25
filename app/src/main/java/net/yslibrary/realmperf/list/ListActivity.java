@@ -3,14 +3,12 @@ package net.yslibrary.realmperf.list;
 import net.yslibrary.realmperf.App;
 import net.yslibrary.realmperf.Note;
 import net.yslibrary.realmperf.R;
+import net.yslibrary.realmperf.TestBaseActivity;
 import net.yslibrary.realmperf.ViewHolder;
-import net.yslibrary.realmperf.databinding.ActivityTestBaseBinding;
 
 import android.content.Context;
 import android.content.Intent;
-import android.databinding.DataBindingUtil;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -24,17 +22,11 @@ import io.realm.Realm;
 import io.realm.internal.OutOfMemoryError;
 import timber.log.Timber;
 
-public class ListActivity extends AppCompatActivity {
-
-    public static final String BUNDLE_NEXT_ID = "next_id";
+public class ListActivity extends TestBaseActivity {
 
     private Realm realm;
 
-    private ActivityTestBaseBinding binding;
-
     private Adapter adapter;
-
-    private long nextId;
 
     public static Intent getIntent(Context context, long nextId) {
         Intent intent = new Intent(context.getApplicationContext(), ListActivity.class);
@@ -46,7 +38,6 @@ public class ListActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_test_base);
         realm = Realm.getDefaultInstance();
 
         nextId = getIntent().getLongExtra(BUNDLE_NEXT_ID, 0L);
@@ -57,6 +48,7 @@ public class ListActivity extends AppCompatActivity {
             }
         }
 
+        long start = System.currentTimeMillis();
         try {
             List<Note> notes = new ArrayList<>();
             long max = App.get(this).noteIdCounter.get();
@@ -89,9 +81,9 @@ public class ListActivity extends AppCompatActivity {
             }
             throw t;
         }
-
+        long time = System.currentTimeMillis() - start;
         long count = App.get(this).listActivityCount.incrementAndGet();
-        Timber.d("ListActivity count - %d", count);
+        Timber.d("ListActivity in %d millis count - %d", time, count);
     }
 
 
