@@ -9,13 +9,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 
-import io.realm.Realm;
 import io.realm.internal.OutOfMemoryError;
 import timber.log.Timber;
 
 public class StandaloneRealmListActivity extends TestBaseActivity {
-
-    private Realm realm;
 
     public static Intent getIntent(Context context, long nextId) {
         Intent intent = new Intent(context.getApplicationContext(),
@@ -28,8 +25,6 @@ public class StandaloneRealmListActivity extends TestBaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        realm = Realm.getDefaultInstance();
 
         nextId = getIntent().getLongExtra(BUNDLE_NEXT_ID, 0L);
         if (nextId > 0) {
@@ -73,11 +68,5 @@ public class StandaloneRealmListActivity extends TestBaseActivity {
         binding.getRoot().postDelayed(() -> {
             startActivity(getIntent(this, nextId + 1));
         }, 500);
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        realm.close();
     }
 }

@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 
 import java.util.List;
 
+import io.realm.Realm;
 import timber.log.Timber;
 
 /**
@@ -21,6 +22,8 @@ import timber.log.Timber;
 public class TestBaseActivity extends AppCompatActivity {
 
     public static final String BUNDLE_NEXT_ID = "next_id";
+
+    protected Realm realm;
 
     protected ActivityTestBaseBinding binding;
 
@@ -32,6 +35,7 @@ public class TestBaseActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_test_base);
+        realm = Realm.getDefaultInstance();
     }
 
     @Override
@@ -62,6 +66,7 @@ public class TestBaseActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         Timber.d("onDestroy - %s", this.toString());
+        realm.close();
     }
 
 

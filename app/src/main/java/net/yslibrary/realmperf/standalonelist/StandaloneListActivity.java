@@ -1,7 +1,7 @@
-package net.yslibrary.realmperf.realmlist;
+package net.yslibrary.realmperf.standalonelist;
 
 import net.yslibrary.realmperf.App;
-import net.yslibrary.realmperf.Folder;
+import net.yslibrary.realmperf.Note;
 import net.yslibrary.realmperf.TestBaseActivity;
 
 import android.content.Context;
@@ -9,13 +9,16 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import io.realm.internal.OutOfMemoryError;
 import timber.log.Timber;
 
-public class RealmListActivity extends TestBaseActivity {
+public class StandaloneListActivity extends TestBaseActivity {
 
     public static Intent getIntent(Context context, long nextId) {
-        Intent intent = new Intent(context.getApplicationContext(), RealmListActivity.class);
+        Intent intent = new Intent(context.getApplicationContext(), StandaloneListActivity.class);
         intent.putExtra(BUNDLE_NEXT_ID, nextId);
 
         return intent;
@@ -27,7 +30,7 @@ public class RealmListActivity extends TestBaseActivity {
 
         nextId = getIntent().getLongExtra(BUNDLE_NEXT_ID, 0L);
         if (nextId > 0) {
-            long current = App.get(this).folderIdCounter.get();
+            long current = App.get(this).noteIdCounter.get();
             if (nextId == current) {
                 nextId = 0;
             }
@@ -35,18 +38,31 @@ public class RealmListActivity extends TestBaseActivity {
 
         long start = System.currentTimeMillis();
         try {
-            Folder folder = realm.where(Folder.class).equalTo("id", nextId).findFirst();
-            if (folder == null) {
-                while (realm.where(Folder.class).equalTo("id", nextId).count() == 0) {
-                    nextId++;
+            List<Note> notes = new ArrayList<>();
+            long max = App.get(this).noteIdCounter.get();
+            long current = nextId;
+            long i = 0;
+            for (; i < 200; ) {
+                Note note = realm.where(Note.class).equalTo("id", current).findFirst();
+                if (note == null) {
+                    if (current >= max) {
+                        current = 0;
+                    } else {
+                        current++;
+                    }
+                } else {
+                    // Managed realm object to standalone realm object
+                    notes.add(realm.copyFromRealm(note));
+                    i++;
+                    current++;
                 }
-                folder = realm.where(Folder.class).equalTo("id", nextId).findFirst();
             }
-
-            adapter = new Adapter(folder.notes);
+            adapter = new Adapter(notes);
             binding.list.setLayoutManager(
                     new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
             binding.list.setAdapter(adapter);
+            nextId = current;
+
         } catch (Throwable t) {
             if (t instanceof OutOfMemoryError || t instanceof java.lang.OutOfMemoryError) {
                 Timber.e("OutOfMemoryError occurred! - activity count: %d", nextId);
@@ -56,15 +72,16 @@ public class RealmListActivity extends TestBaseActivity {
             throw t;
         }
         long time = System.currentTimeMillis() - start;
-        long count = App.get(this).realmListActivityCount.incrementAndGet();
-        Timber.d("RealmListActivity in %d millis, count - %d", time, count);
+        long count = App.get(this).listActivityCount.incrementAndGet();
+        Timber.d("ListActivity in %d millis count - %d", time, count);
     }
+
 
     @Override
     protected void onResume() {
         super.onResume();
         binding.getRoot().postDelayed(() -> {
-            startActivity(getIntent(this, nextId + 1));
+            startActivity(getIntent(this, nextId));
         }, 500);
     }
 }

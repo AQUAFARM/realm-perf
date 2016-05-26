@@ -22,6 +22,8 @@
         </activity>
         <activity android:name=".standalonerealmlist.StandaloneRealmListActivity">
         </activity>
+        <activity android:name=".standalonelist.StandaloneListActivity">
+        </activity>
     </application>
 
 </manifest>

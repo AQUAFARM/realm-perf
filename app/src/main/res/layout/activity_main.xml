@@ -41,5 +41,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="RealmList to Standalone"/>
+
+        <Button
+                android:id="@+id/to_standalone_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="ArrayList&lt;Standalone>"/>
     </LinearLayout>
 </layout>
