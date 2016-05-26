@@ -1,29 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout
-        xmlns:android="http://schemas.android.com/apk/res/android">
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools">
     <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
+        <ImageView
+                android:id="@+id/header"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:maxHeight="100dp"
+                android:scaleType="center"
+                tools:src="@drawable/lorem_ipsum_2"/>
+
         <TextView
                 android:id="@+id/id"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                tools:text="1000"/>
 
         <TextView
                 android:id="@+id/note1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:maxLines="2"
-                android:ellipsize="end"/>
+                android:ellipsize="end"
+                tools:text="lorem ipsum"/>
 
         <TextView
                 android:id="@+id/note2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:maxLines="2"
-                android:ellipsize="end"/>
+                android:ellipsize="end"
+                tools:text="lorem ipsum"/>
 
     </LinearLayout>
 </layout>

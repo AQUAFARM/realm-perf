@@ -9,8 +9,8 @@ import net.yslibrary.realmperf.ViewHolder;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -69,7 +69,8 @@ public class ListActivity extends TestBaseActivity {
                 }
             }
             adapter = new Adapter(notes);
-            binding.list.setLayoutManager(new LinearLayoutManager(this));
+            binding.list.setLayoutManager(
+                    new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
             binding.list.setAdapter(adapter);
             nextId = current;
 
@@ -92,7 +93,12 @@ public class ListActivity extends TestBaseActivity {
         super.onResume();
         binding.getRoot().postDelayed(() -> {
             startActivity(getIntent(this, nextId));
-        }, 1000);
+        }, 500);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
     }
 
     @Override
@@ -122,6 +128,9 @@ public class ListActivity extends TestBaseActivity {
             holder.binding.id.setText(String.valueOf(note.id));
             holder.binding.note1.setText(note.note);
             holder.binding.note2.setText(note.note2);
+
+            int res = position % 2 > 0 ? R.drawable.lorem_ipsum_1 : R.drawable.lorem_ipsum_2;
+            holder.binding.header.setImageResource(res);
         }
 
         @Override

@@ -5,6 +5,7 @@ import net.yslibrary.realmperf.databinding.ActivityMainBinding;
 import net.yslibrary.realmperf.event.DataPrepared;
 import net.yslibrary.realmperf.list.ListActivity;
 import net.yslibrary.realmperf.realmlist.RealmListActivity;
+import net.yslibrary.realmperf.standalonerealmlist.StandaloneRealmListActivity;
 
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
@@ -34,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
 
         binding.toRealmList.setEnabled(false);
         binding.toList.setEnabled(false);
+        binding.toRealmlistToStandalone.setEnabled(false);
 
         binding.toRealmList.setOnClickListener(view -> {
             startActivity(RealmListActivity.getIntent(this, 0));
@@ -41,6 +43,10 @@ public class MainActivity extends AppCompatActivity {
 
         binding.toList.setOnClickListener(view -> {
             startActivity(ListActivity.getIntent(this, 0));
+        });
+
+        binding.toRealmlistToStandalone.setOnClickListener(view -> {
+            startActivity(StandaloneRealmListActivity.getIntent(this, 0));
         });
 
         Subscription subscription = App.get(this).bus.on(DataPrepared.class)
@@ -52,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
                     binding.noteCount.setText(String.valueOf(realm.where(Note.class).count()));
                     binding.toRealmList.setEnabled(true);
                     binding.toList.setEnabled(true);
+                    binding.toRealmlistToStandalone.setEnabled(true);
                 });
 
         subscriptions.add(subscription);

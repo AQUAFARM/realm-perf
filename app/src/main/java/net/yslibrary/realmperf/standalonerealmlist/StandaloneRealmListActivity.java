@@ -1,4 +1,4 @@
-package net.yslibrary.realmperf.realmlist;
+package net.yslibrary.realmperf.standalonerealmlist;
 
 import net.yslibrary.realmperf.App;
 import net.yslibrary.realmperf.Folder;
@@ -13,12 +13,13 @@ import io.realm.Realm;
 import io.realm.internal.OutOfMemoryError;
 import timber.log.Timber;
 
-public class RealmListActivity extends TestBaseActivity {
+public class StandaloneRealmListActivity extends TestBaseActivity {
 
     private Realm realm;
 
     public static Intent getIntent(Context context, long nextId) {
-        Intent intent = new Intent(context.getApplicationContext(), RealmListActivity.class);
+        Intent intent = new Intent(context.getApplicationContext(),
+                StandaloneRealmListActivity.class);
         intent.putExtra(BUNDLE_NEXT_ID, nextId);
 
         return intent;
@@ -27,6 +28,7 @@ public class RealmListActivity extends TestBaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         realm = Realm.getDefaultInstance();
 
         nextId = getIntent().getLongExtra(BUNDLE_NEXT_ID, 0L);
@@ -47,7 +49,8 @@ public class RealmListActivity extends TestBaseActivity {
                 folder = realm.where(Folder.class).equalTo("id", nextId).findFirst();
             }
 
-            adapter = new Adapter(folder.notes);
+            // Managed realm object to standalone realm object
+            adapter = new Adapter(realm.copyFromRealm(folder.notes));
             binding.list.setLayoutManager(
                     new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
             binding.list.setAdapter(adapter);
@@ -61,7 +64,7 @@ public class RealmListActivity extends TestBaseActivity {
         }
         long time = System.currentTimeMillis() - start;
         long count = App.get(this).realmListActivityCount.incrementAndGet();
-        Timber.d("RealmListActivity in %d millis, count - %d", time, count);
+        Timber.d("StandaloneRealmListActivity in %d millis, count - %d", time, count);
     }
 
     @Override

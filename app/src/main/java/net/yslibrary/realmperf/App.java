@@ -6,6 +6,7 @@ import net.yslibrary.realmperf.event.RxBus;
 import android.app.Application;
 import android.content.Context;
 
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
 import io.realm.Realm;
@@ -34,6 +35,8 @@ public class App extends Application {
     public final AtomicLong listActivityCount = new AtomicLong(0);
 
     public final RxBus bus = new RxBus();
+
+    private final boolean shouldInsert = false;
 
     public static App get(Context context) {
         return (App) context.getApplicationContext();
@@ -66,6 +69,13 @@ public class App extends Application {
         }
         realm.close();
 
+        if (!shouldInsert) {
+            Observable.timer(2, TimeUnit.SECONDS)
+                    .subscribe(aLong -> {
+                        bus.emit(new DataPrepared(0));
+                    });
+            return;
+        }
         Timber.d("create initial data - from note id: %d", noteIdCounter.get());
         long start = System.currentTimeMillis();
         Observable.range(0, 10000)
