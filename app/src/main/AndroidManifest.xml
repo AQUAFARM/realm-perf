@@ -24,6 +24,8 @@
         </activity>
         <activity android:name=".standalonelist.StandaloneListActivity">
         </activity>
+        <activity android:name=".pojo.PojoActivity">
+        </activity>
     </application>
 
 </manifest>
