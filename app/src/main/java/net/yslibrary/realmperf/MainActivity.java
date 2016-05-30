@@ -4,6 +4,7 @@ package net.yslibrary.realmperf;
 import net.yslibrary.realmperf.databinding.ActivityMainBinding;
 import net.yslibrary.realmperf.event.DataPrepared;
 import net.yslibrary.realmperf.list.ListActivity;
+import net.yslibrary.realmperf.pojo.PojoActivity;
 import net.yslibrary.realmperf.realmlist.RealmListActivity;
 import net.yslibrary.realmperf.standalonelist.StandaloneListActivity;
 import net.yslibrary.realmperf.standalonerealmlist.StandaloneRealmListActivity;
@@ -38,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
         binding.toList.setEnabled(false);
         binding.toRealmlistToStandalone.setEnabled(false);
         binding.toStandaloneList.setEnabled(false);
+        binding.toPojoList.setEnabled(false);
 
         binding.toRealmList.setOnClickListener(view -> {
             startActivity(RealmListActivity.getIntent(this, 0));
@@ -55,6 +57,10 @@ public class MainActivity extends AppCompatActivity {
             startActivity(StandaloneListActivity.getIntent(this, 0));
         });
 
+        binding.toPojoList.setOnClickListener(view -> {
+            startActivity(PojoActivity.getIntent(this, 0));
+        });
+
         Subscription subscription = App.get(this).bus.on(DataPrepared.class)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(event -> {
@@ -66,6 +72,7 @@ public class MainActivity extends AppCompatActivity {
                     binding.toList.setEnabled(true);
                     binding.toRealmlistToStandalone.setEnabled(true);
                     binding.toStandaloneList.setEnabled(true);
+                    binding.toPojoList.setEnabled(true);
                 });
 
         subscriptions.add(subscription);
