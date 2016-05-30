@@ -64,7 +64,8 @@ public class ListActivity extends TestBaseActivity {
 
         } catch (Throwable t) {
             if (t instanceof OutOfMemoryError || t instanceof java.lang.OutOfMemoryError) {
-                Timber.e("OutOfMemoryError occurred! - activity count: %d", nextId);
+                Timber.e("OutOfMemoryError occurred! - activity count: %d",
+                        App.get(this).listActivityCount.get());
             } else {
                 Timber.e(t, t.getMessage());
             }

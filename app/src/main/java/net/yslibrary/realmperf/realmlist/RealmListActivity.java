@@ -49,7 +49,8 @@ public class RealmListActivity extends TestBaseActivity {
             binding.list.setAdapter(adapter);
         } catch (Throwable t) {
             if (t instanceof OutOfMemoryError || t instanceof java.lang.OutOfMemoryError) {
-                Timber.e("OutOfMemoryError occurred! - activity count: %d", nextId);
+                Timber.e("OutOfMemoryError occurred! - activity count: %d",
+                        App.get(this).realmListActivityCount.get());
             } else {
                 Timber.e(t, t.getMessage());
             }

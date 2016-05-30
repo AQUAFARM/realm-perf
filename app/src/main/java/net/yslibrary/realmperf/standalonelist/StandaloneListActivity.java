@@ -65,14 +65,15 @@ public class StandaloneListActivity extends TestBaseActivity {
 
         } catch (Throwable t) {
             if (t instanceof OutOfMemoryError || t instanceof java.lang.OutOfMemoryError) {
-                Timber.e("OutOfMemoryError occurred! - activity count: %d", nextId);
+                Timber.e("OutOfMemoryError occurred! - activity count: %d",
+                        App.get(this).standaloneListActivityCount.get());
             } else {
                 Timber.e(t, t.getMessage());
             }
             throw t;
         }
         long time = System.currentTimeMillis() - start;
-        long count = App.get(this).listActivityCount.incrementAndGet();
+        long count = App.get(this).standaloneListActivityCount.incrementAndGet();
         Timber.d("ListActivity in %d millis count - %d", time, count);
     }
 

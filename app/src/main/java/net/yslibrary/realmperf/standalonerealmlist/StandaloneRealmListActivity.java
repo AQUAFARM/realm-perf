@@ -51,14 +51,15 @@ public class StandaloneRealmListActivity extends TestBaseActivity {
             binding.list.setAdapter(adapter);
         } catch (Throwable t) {
             if (t instanceof OutOfMemoryError || t instanceof java.lang.OutOfMemoryError) {
-                Timber.e("OutOfMemoryError occurred! - activity count: %d", nextId);
+                Timber.e("OutOfMemoryError occurred! - activity count: %d",
+                        App.get(this).standaloneRealmListActivityCount.get());
             } else {
                 Timber.e(t, t.getMessage());
             }
             throw t;
         }
         long time = System.currentTimeMillis() - start;
-        long count = App.get(this).realmListActivityCount.incrementAndGet();
+        long count = App.get(this).standaloneRealmListActivityCount.incrementAndGet();
         Timber.d("StandaloneRealmListActivity in %d millis, count - %d", time, count);
     }
 

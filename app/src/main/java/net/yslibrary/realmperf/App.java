@@ -34,6 +34,10 @@ public class App extends Application {
 
     public final AtomicLong listActivityCount = new AtomicLong(0);
 
+    public final AtomicLong standaloneListActivityCount = new AtomicLong(0);
+
+    public final AtomicLong standaloneRealmListActivityCount = new AtomicLong(0);
+
     public final AtomicLong pojoActivityCount = new AtomicLong(0);
 
     public final RxBus bus = new RxBus();

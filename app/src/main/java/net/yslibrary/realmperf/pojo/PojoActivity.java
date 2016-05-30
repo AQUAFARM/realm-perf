@@ -73,7 +73,8 @@ public class PojoActivity extends TestBaseActivity {
 
         } catch (Throwable t) {
             if (t instanceof OutOfMemoryError || t instanceof java.lang.OutOfMemoryError) {
-                Timber.e("OutOfMemoryError occurred! - activity count: %d", nextId);
+                Timber.e("OutOfMemoryError occurred! - activity count: %d",
+                        App.get(this).pojoActivityCount.get());
             } else {
                 Timber.e(t, t.getMessage());
             }
