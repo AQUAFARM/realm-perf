@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import io.realm.Realm;
@@ -74,6 +75,10 @@ public class TestBaseActivity extends AppCompatActivity {
 
         private final List<Note> dataSet;
 
+        public Adapter() {
+            this(new ArrayList<>());
+        }
+
         public Adapter(List<Note> dataSet) {
             this.dataSet = dataSet;
         }
@@ -94,6 +99,11 @@ public class TestBaseActivity extends AppCompatActivity {
 
             int res = position % 2 > 0 ? R.drawable.lorem_ipsum_1 : R.drawable.lorem_ipsum_2;
             holder.binding.header.setImageResource(res);
+        }
+
+        public void addAll(List<Note> dataSet) {
+            this.dataSet.addAll(dataSet);
+            notifyDataSetChanged();
         }
 
         @Override
