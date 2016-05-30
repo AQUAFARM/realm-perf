@@ -80,8 +80,8 @@ public class PojoActivity extends TestBaseActivity {
             throw t;
         }
         long time = System.currentTimeMillis() - start;
-        long count = App.get(this).listActivityCount.incrementAndGet();
-        Timber.d("ListActivity in %d millis count - %d", time, count);
+        long count = App.get(this).pojoActivityCount.incrementAndGet();
+        Timber.d("PojoActivity in %d millis count - %d", time, count);
     }
 
     @Override

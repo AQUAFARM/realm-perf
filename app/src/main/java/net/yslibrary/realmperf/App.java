@@ -34,6 +34,8 @@ public class App extends Application {
 
     public final AtomicLong listActivityCount = new AtomicLong(0);
 
+    public final AtomicLong pojoActivityCount = new AtomicLong(0);
+
     public final RxBus bus = new RxBus();
 
     private final boolean shouldInsert = false;
