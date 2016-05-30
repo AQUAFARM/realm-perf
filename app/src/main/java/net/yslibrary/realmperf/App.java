@@ -42,7 +42,7 @@ public class App extends Application {
 
     public final RxBus bus = new RxBus();
 
-    private final boolean shouldInsert = false;
+    private final boolean shouldInsert = true;
 
     public static App get(Context context) {
         return (App) context.getApplicationContext();
@@ -75,7 +75,7 @@ public class App extends Application {
         }
         realm.close();
 
-        if (!shouldInsert) {
+        if (noteIdCounter.get() > 100000L || !shouldInsert) {
             Observable.timer(2, TimeUnit.SECONDS)
                     .subscribe(aLong -> {
                         bus.emit(new DataPrepared(0));
